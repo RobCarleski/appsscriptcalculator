@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+    <?!= include('style'); ?>
+    <base target="_top">
+    <script>
+      /**
+      * This function prevents all forms on the page from submitting.
+      * If we don't have this, things break. Code is generic from Google.
+      */
+      function preventFormSubmit() {
+        var forms = document.querySelectorAll('form');
+        for (var i = 0; i < forms.length; i++) {
+          forms[i].addEventListener('submit', function(event) {
+            event.preventDefault();
+          });
+        }
+      }
+      window.addEventListener('load', preventFormSubmit);
+      
+      /**
+      * This function processes the form when it's submitted.
+      * On successful calculation, it shows the answer. 
+      * On failure, it displays an error instead.
+      * @param formObject A form object automatically created by GAS.
+      */
+      function handleFormSubmit(formObject) {
+        google.script.run.withSuccessHandler(displayAnswer).withFailureHandler(displayError).calculate(formObject);  
+      }
+      
+      /**
+      * A function for displaying the answer once it's calculated.
+      */
+      function displayAnswer(answer){
+        var pageContent = document.getElementById('answer');
+        pageContent.innerHTML = "The answer is: " + answer;
+      }
+      
+      /**
+      * A function for displaying an error if the given string is unable
+      * to be evalutated
+      */
+      function displayError(){
+        var pageContent = document.getElementById('answer');
+        pageContent.innerHTML = "I don't know what this is, but it's not math. :("
+      }
+    </script>
+  </head>
+  <body>
+    <header>
+      <span>Super-Amazing Apps Script Calculator</span>
+    </header>
+    <div id="content">
+      <h3>Let's calculate something!</h3>
+      <form id="calcForm" onsubmit="handleFormSubmit(this)">
+        <input type="textbox" name="eq">
+        <input class="create" type="submit" value="Calculate!">
+      </form>
+      <div id="answer">
+    </div>
+    </div>
+  </body>
+</html>
